@@ -1,0 +1,51 @@
+
+/*
+xaos palette:
+
+--antiflash-white: #eeeeeeff;
+--pumpkin: #ff6600ff;
+--night: #000f08ff;
+--moonstone: #4da1a9ff;
+--tyrian-purple: #611c35ff;
+--wine: #6b2737ff;
+--paynes-gray: #5d737eff;
+*/
+
+:root {
+    --gap: 24px;
+    --content-gap: 20px;
+    --nav-width: 1024px;
+    --main-width: 720px;
+    --header-height: 60px;
+    --footer-height: 60px;
+    --radius: 8px;
+    --theme: #eeeeee;
+    --entry: #030303;
+    --primary: #ff6600;
+    --secondary: #6b2737ff;
+    --tertiary: #5d737eff;
+    --content: #000f08;
+    --hljs-bg: #6b2737ff;
+    --code-bg: #e6e6e6;
+    --border: #ff6600;
+}
+
+.dark {
+    --theme: #000f08;
+    --entry: #030303;
+    --primary: #ff6600;
+    --secondary: #5d737eff;
+    --tertiary: #6b2737ff;
+    --content: #eeeeee;
+    --hljs-bg: #6b2737ff;
+    --code-bg: #ff6600;
+    --border: #5d737eff;
+}
+
+.list {
+    background: var(--theme);
+}
+
+.dark.list {
+    background: var(--theme);
+}

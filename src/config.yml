@@ -1,0 +1,53 @@
+# https://gohugo.io/getting-started/configuration/
+baseURL: http://xaos.fm/
+publishDir: ../public
+languageCode: en-us
+title: xaos
+paginate: 5
+theme: PaperMod # https://github.com/adityatelange/hugo-PaperMod/wiki
+
+# enableRobotsTXT: true
+# buildDrafts: false
+# buildFuture: false
+# buildExpired: false
+
+# minify:
+#   disableXML: true
+#   minifyOutput: true
+
+params:
+  env: dev # production
+  title: xaos.fm
+  description: "xaos is everything"
+  #keywords: [Blog, Portfolio, PaperMod]
+  author: xaos
+  # author: ["Me", "You"] # multiple authors
+  #images: ["<link or path of image for opengraph, twitter-cards>"]
+  DateFormat: "2006-01-02"
+  defaultTheme: auto # dark, light
+  disableThemeToggle: false
+  socialIcons:
+    - name: twitter
+      url: "https://twitter.com/"
+    - name: stackoverflow
+      url: "https://stackoverflow.com"
+    - name: github
+      url: "https://github.com/"
+  profileMode:
+    enabled: true
+    title: "xaos" # optional default will be site title
+    subtitle: "everything is xaos"
+    #imageUrl: "<image link>" # optional
+    #imageTitle: "<title of image as alt>" # optional
+    #imageWidth: 120 # custom size
+    #imageHeight: 120 # custom size
+
+
+menu:
+  main:
+    - name: About
+      url: /about
+      weight: 10
+    - name: Info
+      url: /info
+      weight: 5
