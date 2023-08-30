@@ -1,0 +1,102 @@
+{
+    "authorized": 1,
+    "scenes": [
+        {
+            "name": "Library",
+            "list": [
+                {
+                    "id": 1,
+                    "authorized": 1,
+                    "title": "Stream 1",
+                    "description": "Stream 1",
+                    "stereomode": null,
+                    "screenType": null,
+                    "fullVideoReady": true,
+                    "videoLength": 1,
+                    "fullVideoLength": 1,
+                    "fullAccess": true,
+                    "encodings": [
+                        {
+                            "name": "h264",
+                            "videoSources": [
+                                {
+                                    "resolution": 1920,
+                                    "url": "http://188.230.154.16:11001/live/stream1/stream.m3u8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "authorized": 1,
+                    "title": "Stream 2",
+                    "description": "Stream 2",
+                    "stereomode": null,
+                    "screenType": null,
+                    "fullVideoReady": true,
+                    "videoLength": 1,
+                    "fullVideoLength": 1,
+                    "fullAccess": true,
+                    "encodings": [
+                        {
+                            "name": "h264",
+                            "videoSources": [
+                                {
+                                    "resolution": 1920,
+                                    "url": "http://188.230.154.16:11001/live/stream2/stream.m3u8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": 3,
+                    "authorized": 1,
+                    "title": "Stream 3",
+                    "description": "Stream 3",
+                    "stereomode": null,
+                    "screenType": null,
+                    "fullVideoReady": true,
+                    "videoLength": 1,
+                    "fullVideoLength": 1,
+                    "fullAccess": true,
+                    "encodings": [
+                        {
+                            "name": "h264",
+                            "videoSources": [
+                                {
+                                    "resolution": 1920,
+                                    "url": "http://188.230.154.16:11001/live/stream3/stream.m3u8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": 4,
+                    "authorized": 1,
+                    "title": "Stream 4",
+                    "description": "Stream 4",
+                    "stereomode": null,
+                    "screenType": null,
+                    "fullVideoReady": true,
+                    "videoLength": 1,
+                    "fullVideoLength": 1,
+                    "fullAccess": true,
+                    "encodings": [
+                        {
+                            "name": "h264",
+                            "videoSources": [
+                                {
+                                    "resolution": 1920,
+                                    "url": "http://188.230.154.16:11001/live/stream4/stream.m3u8"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
