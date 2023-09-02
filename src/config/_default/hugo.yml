@@ -15,11 +15,11 @@ theme: PaperMod # https://github.com/adityatelange/hugo-PaperMod/wiki
 #   disableXML: true
 #   minifyOutput: true
 
-menu:
-  main:
-    - name: About
-      url: /about
-      weight: 10
-    - name: Info
-      url: /info
-      weight: 5
+# menu:
+#   main:
+#     - name: About
+#       url: /about
+#       weight: 10
+#     - name: Info
+#       url: /info
+#       weight: 5
