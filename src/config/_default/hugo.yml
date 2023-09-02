@@ -1,0 +1,25 @@
+# https://gohugo.io/getting-started/configuration/
+baseURL: http://xaos.fm/
+publishDir: ../public
+languageCode: en-us
+title: xaos
+paginate: 5
+theme: PaperMod # https://github.com/adityatelange/hugo-PaperMod/wiki
+
+# enableRobotsTXT: true
+# buildDrafts: false
+# buildFuture: false
+# buildExpired: false
+
+# minify:
+#   disableXML: true
+#   minifyOutput: true
+
+menu:
+  main:
+    - name: About
+      url: /about
+      weight: 10
+    - name: Info
+      url: /info
+      weight: 5

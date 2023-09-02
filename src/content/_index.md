@@ -6,5 +6,3 @@ hidemeta: true
 ---
 
 everything comes from xaos and will go back to xaos
-
-# What?!

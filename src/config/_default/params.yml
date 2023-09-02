@@ -1,0 +1,25 @@
+env: development
+title: xaos.fm
+description: "xaos is everything"
+#keywords: [Blog, Portfolio, PaperMod]
+author: xaos
+# author: ["Me", "You"] # multiple authors
+#images: ["<link or path of image for opengraph, twitter-cards>"]
+DateFormat: "2006-01-02"
+defaultTheme: auto # dark, light
+disableThemeToggle: false
+socialIcons:
+  - name: bandcamp
+    url: "https://xaosr.bandcamp.com/"
+  - name: spotify
+    url: "https://open.spotify.com/artist/1kxGJade2mdhyKIbTfnJgf?si=d4a8b213540b450f"
+  - name: youtube
+    url: "https://www.youtube.com/@xaosresonance"
+profileMode:
+  enabled: true
+  title: "xaos" # optional default will be site title
+  subtitle: "everything is xaos"
+  #imageUrl: "<image link>" # optional
+  #imageTitle: "<title of image as alt>" # optional
+  #imageWidth: 120 # custom size
+  #imageHeight: 120 # custom size
