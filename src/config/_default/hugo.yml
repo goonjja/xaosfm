@@ -1,6 +1,6 @@
 # https://gohugo.io/getting-started/configuration/
 baseURL: http://xaos.fm/
-publishDir: ../public
+publishDir: ../docs
 languageCode: en-us
 title: xaos
 paginate: 5
