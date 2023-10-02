@@ -5,6 +5,98 @@
             "name": "Library",
             "list": [
                 {
+                    "id": 11,
+                    "authorized": 1,
+                    "title": "Cam",
+                    "description": "Cam",
+                    "stereomode": null,
+                    "screenType": null,
+                    "fullVideoReady": true,
+                    "videoLength": 1,
+                    "fullVideoLength": 1,
+                    "fullAccess": true,
+                    "encodings": [
+                        {
+                            "name": "h265",
+                            "videoSources": [
+                                {
+                                    "resolution": 1920,
+                                    "url": "http://188.230.154.16:11001/cam/stream.m3u8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": 12,
+                    "authorized": 1,
+                    "title": "Cam 1",
+                    "description": "Cam 1",
+                    "stereomode": null,
+                    "screenType": null,
+                    "fullVideoReady": true,
+                    "videoLength": 1,
+                    "fullVideoLength": 1,
+                    "fullAccess": true,
+                    "encodings": [
+                        {
+                            "name": "h265",
+                            "videoSources": [
+                                {
+                                    "resolution": 1920,
+                                    "url": "http://188.230.154.16:11001/cam1/stream.m3u8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": 13,
+                    "authorized": 1,
+                    "title": "Cam 2",
+                    "description": "Cam 2",
+                    "stereomode": null,
+                    "screenType": null,
+                    "fullVideoReady": true,
+                    "videoLength": 1,
+                    "fullVideoLength": 1,
+                    "fullAccess": true,
+                    "encodings": [
+                        {
+                            "name": "h265",
+                            "videoSources": [
+                                {
+                                    "resolution": 1920,
+                                    "url": "http://188.230.154.16:11001/cam2/stream.m3u8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": 14,
+                    "authorized": 1,
+                    "title": "Cam 3",
+                    "description": "Cam 3",
+                    "stereomode": null,
+                    "screenType": null,
+                    "fullVideoReady": true,
+                    "videoLength": 1,
+                    "fullVideoLength": 1,
+                    "fullAccess": true,
+                    "encodings": [
+                        {
+                            "name": "h265",
+                            "videoSources": [
+                                {
+                                    "resolution": 1920,
+                                    "url": "http://188.230.154.16:11001/cam3/stream.m3u8"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
                     "id": 1,
                     "authorized": 1,
                     "title": "Stream 1",
