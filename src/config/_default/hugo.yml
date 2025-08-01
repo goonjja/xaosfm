@@ -6,6 +6,9 @@ title: xaos
 paginate: 5
 theme: PaperMod # https://github.com/adityatelange/hugo-PaperMod/wiki
 
+services:
+  googleAnalytics:
+    id: G-ZGB22G1VTE
 # enableRobotsTXT: true
 # buildDrafts: false
 # buildFuture: false
