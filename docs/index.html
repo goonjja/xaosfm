@@ -111,7 +111,7 @@ class Component extends DCLogic {
     this.initGrain();
     this.auroras = [];
     this.lastActive = performance.now();
-    this.auroraTimer = setTimeout(this.scheduleAurora, 22000 + Math.random() * 20000);
+    this.auroraTimer = setTimeout(this.scheduleAurora, 3500 + Math.random() * 6000);
     window.addEventListener('resize', this.onResize);
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('mousedown', this.onPressDown);
@@ -210,12 +210,14 @@ class Component extends DCLogic {
     const N = 640;
     this.particles = [];
     for (let i = 0; i < N; i++) {
+      const tint = Math.random();
       this.particles.push({
         x: Math.random(), y: Math.random(),
         z: 0.18 + Math.random() * 0.82,
-        vx: (Math.random() - 0.5) * 0.00008,
-        vy: (Math.random() - 0.5) * 0.00008,
+        vx: (Math.random() - 0.5) * 0.0004,
+        vy: (Math.random() - 0.5) * 0.0004,
         ph: Math.random() * Math.PI * 2,
+        col: tint < 0.68 ? '220,224,236' : tint < 0.84 ? '150,238,205' : '194,160,242',
       });
     }
   }
@@ -346,39 +348,75 @@ class Component extends DCLogic {
     }
   }
 
-  // ---------- aurora: rare cold watercolor blooms ----------
+  // ---------- aurora borealis: colorful curtains that swell and fade ----------
+  auroraPalettes = [
+    ['90,240,170', '150,255,205'],   // classic green
+    ['70,225,215', '150,255,240'],   // cyan / teal
+    ['95,215,160', '185,130,240'],   // green with violet tips
+    ['120,180,250', '190,120,235'],  // blue into violet
+    ['80,235,150', '235,110,185'],   // green with magenta
+    ['130,235,120', '120,255,225'],  // lime into cyan
+  ];
   scheduleAurora = () => {
-    this.spawnAurora();
-    this.auroraTimer = setTimeout(this.scheduleAurora, 80000 + Math.random() * 120000);
+    const n = Math.random() < 0.35 ? 2 : 1;
+    for (let k = 0; k < n; k++) this.spawnAurora();
+    this.auroraTimer = setTimeout(this.scheduleAurora, 14000 + Math.random() * 26000);
   };
   spawnAurora() {
     if (!this.auroras) this.auroras = [];
+    if (this.auroras.length > 4) return;
     const fromLeft = Math.random() < 0.5;
+    const p = this.auroraPalettes[(Math.random() * this.auroraPalettes.length) | 0];
     this.auroras.push({
-      x: fromLeft ? -0.1 : 1.1, y: 0.18 + Math.random() * 0.6,
-      vx: (fromLeft ? 1 : -1) * (0.005 + Math.random() * 0.006),
-      vy: (Math.random() - 0.5) * 0.004,
+      x: 0.5 + (Math.random() - 0.5) * 0.5,
+      y: 0.06 + Math.random() * 0.26,           // hangs from the upper field
+      w: 0.45 + Math.random() * 0.5,
+      h: 0.4 + Math.random() * 0.42,            // curtain drop
+      amp: 0.018 + Math.random() * 0.05,        // crest wave height
+      freq: 3.5 + Math.random() * 5,
+      speed: 0.12 + Math.random() * 0.3,
+      phase: Math.random() * Math.PI * 2,
+      vx: (fromLeft ? 1 : -1) * (0.003 + Math.random() * 0.006),
       born: (performance.now() - this.t0) / 1000,
-      life: 16 + Math.random() * 10,
-      hue: Math.random() < 0.5 ? [72, 122, 152] : [98, 112, 158],
-      r: 0.5 + Math.random() * 0.28,
+      life: 15 + Math.random() * 13,
+      colC: p[0], colT: p[1],
     });
   }
   renderAuroras(ctx, W, H, t) {
     if (!this.auroras || !this.auroras.length) return;
     this.auroras = this.auroras.filter((a) => t - a.born < a.life);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    const SL = 48;
     for (const a of this.auroras) {
       const age = (t - a.born) / a.life;
-      a.x += a.vx * 0.016; a.y += a.vy * 0.016;
-      const env = Math.sin(Math.PI * Math.max(0, Math.min(1, age)));
-      const cxp = a.x * W, cyp = a.y * H, rad = a.r * Math.min(W, H);
-      const g = ctx.createRadialGradient(cxp, cyp, 0, cxp, cyp, rad);
-      const c = a.hue;
-      g.addColorStop(0, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + (0.085 * env) + ')');
-      g.addColorStop(0.5, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + (0.032 * env) + ')');
-      g.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      const env = Math.sin(Math.PI * Math.max(0, Math.min(1, age)));   // fade in & out
+      if (env <= 0.002) continue;
+      a.x += a.vx * 0.016;
+      const w = a.w * W, x0 = a.x * W - w / 2;
+      const baseY = a.y * H, drop = a.h * H, amp = a.amp * H;
+      const sw = w / SL + 1.5;
+      for (let i = 0; i <= SL; i++) {
+        const fx = i / SL;
+        const sx = x0 + fx * w;
+        const crest = Math.sin(fx * a.freq + t * a.speed + a.phase) * amp
+                    + Math.sin(fx * a.freq * 2.3 - t * a.speed * 0.6 + a.phase) * amp * 0.4;
+        const topY = baseY + crest;
+        // soft ends + vertical-ray flicker for the curtain texture
+        const edge = Math.sin(Math.PI * fx);
+        const ray = 0.78 + 0.22 * Math.sin(fx * 60 + t * 1.3 + a.phase * 4);
+        const al = env * edge * ray;
+        if (al <= 0.003) continue;
+        const g = ctx.createLinearGradient(0, topY, 0, topY + drop);
+        g.addColorStop(0, 'rgba(' + a.colT + ',0)');
+        g.addColorStop(0.1, 'rgba(' + a.colT + ',' + (0.30 * al).toFixed(4) + ')');
+        g.addColorStop(0.4, 'rgba(' + a.colC + ',' + (0.22 * al).toFixed(4) + ')');
+        g.addColorStop(1, 'rgba(' + a.colC + ',0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(sx, topY, sw, drop);
+      }
     }
+    ctx.restore();
   }
 
   // ---------- slow modulation: drift the key over minutes ----------
@@ -414,7 +452,7 @@ class Component extends DCLogic {
         x: Math.random(), y: Math.random(), n, chars,
         size: Math.random() < 0.55 ? 12 : 16,
         vy: (Math.random() < 0.5 ? -1 : 1) * (0.00009 + Math.random() * 0.0004),
-        alpha: 0.045 + Math.random() * 0.11,
+        alpha: 0.06 + Math.random() * 0.13,
         line: Math.random() < 0.45,
         glitchUntil: 0,
       });
@@ -812,7 +850,7 @@ class Component extends DCLogic {
 
     const cx = W * 0.5, cy = H * 0.42;
     const disc = ctx.createRadialGradient(cx, cy, 0, cx, cy, H * 0.46);
-    disc.addColorStop(0, 'rgba(' + Math.round(136 - fl * 34) + ',' + (140 + Math.round(fl * 16)) + ',' + Math.round(156 + fl * 70) + ',' + (0.13 + lv * 0.2) + ')');
+    disc.addColorStop(0, 'rgba(' + Math.round(136 - fl * 34) + ',' + (140 + Math.round(fl * 16)) + ',' + Math.round(156 + fl * 70) + ',' + (0.17 + lv * 0.23) + ')');
     disc.addColorStop(0.4, 'rgba(66,68,82,0.07)');
     disc.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = disc; ctx.fillRect(0, 0, W, H);
@@ -834,7 +872,7 @@ class Component extends DCLogic {
       const baseY = H * (0.08 + p * 0.86);
       const dist = Math.abs(baseY - cy) / H;
       const amp = (9 + 32 * (1 - dist)) * dpr * (0.55 + lv * 1.3);
-      const alpha = (0.055 + (1 - dist) * 0.24) * (0.55 + lv * 0.7) * aw;
+      const alpha = (0.075 + (1 - dist) * 0.28) * (0.6 + lv * 0.7) * aw;
       ctx.beginPath();
       const step = 9 * dpr;
       for (let x = 0; x <= W + step; x += step) {
@@ -866,7 +904,7 @@ class Component extends DCLogic {
       }
       // cold accent blooms only with audio energy — at rest the line is near-white
       const cr = Math.round(232 - lv * 96), cg = Math.round(235 - lv * 44);
-      ctx.strokeStyle = 'rgba(' + cr + ',' + cg + ',246,' + (0.2 + lv * 0.5) * aw + ')';
+      ctx.strokeStyle = 'rgba(' + cr + ',' + cg + ',246,' + (0.27 + lv * 0.55) * aw + ')';
       ctx.lineWidth = 1.3 * dpr;
       ctx.shadowColor = 'rgba(120,180,232,' + (0.45 * lv) + ')';
       ctx.shadowBlur = 11 * dpr * lv;
@@ -878,6 +916,7 @@ class Component extends DCLogic {
     const nmx = this.mouse.x, nmy = this.mouse.y;
     const pull = this.mouse.active ? 1 : 0;
     const near = [];
+    const pts = [];
     for (let i = 0; i < this.particles.length; i++) {
       const pt = this.particles[i];
       if (pull) {
@@ -893,22 +932,28 @@ class Component extends DCLogic {
           pt.vx -= (dx / rr) * 0.0007; pt.vy -= (dy / rr) * 0.0007;
         }
       }
+      // slow large-scale drift current — keeps the dust always flowing, even at rest
+      const fa = Math.sin(pt.y * 3.2 + t * 0.05 + pt.ph) + Math.cos(pt.x * 3.4 - t * 0.04);
+      pt.vx += Math.cos(fa * 1.7) * 0.0000085;
+      pt.vy += Math.sin(fa * 1.7) * 0.0000085;
       // turbulence + brownian jitter -> unpredictable, scattered
-      pt.vx += (Math.sin(t * 0.22 + pt.ph * 1.7) + Math.sin(t * 0.1 + pt.ph)) * 0.0000022 + (Math.random() - 0.5) * 0.00004;
-      pt.vy += (Math.cos(t * 0.18 + pt.ph * 1.3) + Math.cos(t * 0.085 + pt.ph)) * 0.0000022 + (Math.random() - 0.5) * 0.00004;
+      pt.vx += (Math.sin(t * 0.22 + pt.ph * 1.7) + Math.sin(t * 0.1 + pt.ph)) * 0.0000035 + (Math.random() - 0.5) * 0.00006;
+      pt.vy += (Math.cos(t * 0.18 + pt.ph * 1.3) + Math.cos(t * 0.085 + pt.ph)) * 0.0000035 + (Math.random() - 0.5) * 0.00006;
       const vmax = 0.0052;
       if (pt.vx > vmax) pt.vx = vmax; else if (pt.vx < -vmax) pt.vx = -vmax;
       if (pt.vy > vmax) pt.vy = vmax; else if (pt.vy < -vmax) pt.vy = -vmax;
       pt.x += pt.vx; pt.y += pt.vy;
-      pt.vx *= 0.95; pt.vy *= 0.95;
+      pt.vx *= 0.975; pt.vy *= 0.975;
       if (pt.x < -0.05) pt.x += 1.1; if (pt.x > 1.05) pt.x -= 1.1;
       if (pt.y < -0.05) pt.y += 1.1; if (pt.y > 1.05) pt.y -= 1.1;
       const par = (1 - pt.z) * 0.055;
       const sx = (pt.x + (nmx - 0.5) * par) * W;
       const sy = (pt.y + (nmy - 0.5) * par) * H;
-      const size = (0.5 + pt.z * 1.6) * dpr * (1 + lv * 0.6);
-      const bright = (0.2 + pt.z * 0.6) * (0.6 + lv * 0.8) * aw;
-      ctx.fillStyle = 'rgba(220,222,232,' + Math.min(0.95, bright) + ')';
+      pts.push(sx, sy);
+      const size = (0.6 + pt.z * 1.7) * dpr * (1 + lv * 0.5);
+      const tw = 0.72 + 0.28 * Math.sin(t * 0.9 + pt.ph * 4);
+      const bright = (0.26 + pt.z * 0.5) * (0.5 + lv * 0.7) * (0.6 + 0.4 * aw) * tw;
+      ctx.fillStyle = 'rgba(' + pt.col + ',' + Math.min(0.92, bright) + ')';
       ctx.fillRect(sx, sy, size, size);
       if (pull && near.length < 70) {
         const ddx = pt.x - nmx, ddy = pt.y - nmy;
@@ -933,6 +978,47 @@ class Component extends DCLogic {
           }
         }
       }
+    }
+
+    // roaming nets — clusters of dust knit into a web at random, then dissolve
+    this.nets = (this.nets || []).filter((nn) => t - nn.born < nn.life);
+    if (this.nets.length < 3 && Math.random() < 0.012 * (0.5 + 0.5 * this.state.intensity)) {
+      const pal = this.auroraPalettes[(Math.random() * this.auroraPalettes.length) | 0];
+      this.nets.push({
+        x: 0.12 + Math.random() * 0.76, y: 0.14 + Math.random() * 0.64,
+        r: 0.07 + Math.random() * 0.08,
+        born: t, life: 4.5 + Math.random() * 5.5,
+        col: Math.random() < 0.5 ? '198,203,218' : pal[0],
+      });
+    }
+    for (const net of this.nets) {
+      const env = Math.sin(Math.PI * Math.max(0, Math.min(1, (t - net.born) / net.life)));
+      if (env < 0.02) continue;
+      const ncx = net.x * W, ncy = net.y * H, nr = net.r * Math.min(W, H), nr2 = nr * nr;
+      const mem = [];
+      for (let i = 0; i < pts.length; i += 2) {
+        const dx = pts[i] - ncx, dy = pts[i + 1] - ncy;
+        if (dx * dx + dy * dy < nr2) { mem.push(pts[i], pts[i + 1]); if (mem.length >= 52) break; }
+      }
+      const mcnt = mem.length / 2;
+      if (mcnt < 3) continue;
+      const maxd = nr * 0.6, maxd2 = maxd * maxd;
+      ctx.lineWidth = 0.7 * dpr;
+      for (let a = 0; a < mcnt; a++) {
+        const ax = mem[a * 2], ay = mem[a * 2 + 1];
+        for (let b = a + 1; b < mcnt; b++) {
+          const dx = ax - mem[b * 2], dy = ay - mem[b * 2 + 1];
+          const d2 = dx * dx + dy * dy;
+          if (d2 < maxd2) {
+            const al = (1 - Math.sqrt(d2) / maxd) * 0.16 * env * aw;
+            ctx.strokeStyle = 'rgba(' + net.col + ',' + al + ')';
+            ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(mem[b * 2], mem[b * 2 + 1]); ctx.stroke();
+          }
+        }
+      }
+      // light up the nodes while the net holds
+      ctx.fillStyle = 'rgba(' + net.col + ',' + (0.5 * env * aw).toFixed(3) + ')';
+      for (let a = 0; a < mcnt; a++) ctx.fillRect(mem[a * 2] - dpr, mem[a * 2 + 1] - dpr, 2 * dpr, 2 * dpr);
     }
 
     // glitch glyph layer
