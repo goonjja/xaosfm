@@ -358,13 +358,13 @@ class Component extends DCLogic {
     ['130,235,120', '120,255,225'],  // lime into cyan
   ];
   scheduleAurora = () => {
-    const n = Math.random() < 0.35 ? 2 : 1;
+    const n = Math.random() < 0.5 ? 2 : 1;
     for (let k = 0; k < n; k++) this.spawnAurora();
-    this.auroraTimer = setTimeout(this.scheduleAurora, 14000 + Math.random() * 26000);
+    this.auroraTimer = setTimeout(this.scheduleAurora, 7000 + Math.random() * 14000);
   };
   spawnAurora() {
     if (!this.auroras) this.auroras = [];
-    if (this.auroras.length > 4) return;
+    if (this.auroras.length > 5) return;
     const fromLeft = Math.random() < 0.5;
     const p = this.auroraPalettes[(Math.random() * this.auroraPalettes.length) | 0];
     this.auroras.push({
@@ -982,7 +982,7 @@ class Component extends DCLogic {
 
     // roaming nets — clusters of dust knit into a web at random, then dissolve
     this.nets = (this.nets || []).filter((nn) => t - nn.born < nn.life);
-    if (this.nets.length < 3 && Math.random() < 0.012 * (0.5 + 0.5 * this.state.intensity)) {
+    if (this.nets.length < 5 && Math.random() < 0.032 * (0.5 + 0.5 * this.state.intensity)) {
       const pal = this.auroraPalettes[(Math.random() * this.auroraPalettes.length) | 0];
       this.nets.push({
         x: 0.12 + Math.random() * 0.76, y: 0.14 + Math.random() * 0.64,
@@ -1002,23 +1002,23 @@ class Component extends DCLogic {
       }
       const mcnt = mem.length / 2;
       if (mcnt < 3) continue;
-      const maxd = nr * 0.6, maxd2 = maxd * maxd;
-      ctx.lineWidth = 0.7 * dpr;
+      const maxd = nr * 0.66, maxd2 = maxd * maxd;
+      ctx.lineWidth = 0.9 * dpr;
       for (let a = 0; a < mcnt; a++) {
         const ax = mem[a * 2], ay = mem[a * 2 + 1];
         for (let b = a + 1; b < mcnt; b++) {
           const dx = ax - mem[b * 2], dy = ay - mem[b * 2 + 1];
           const d2 = dx * dx + dy * dy;
           if (d2 < maxd2) {
-            const al = (1 - Math.sqrt(d2) / maxd) * 0.16 * env * aw;
+            const al = (1 - Math.sqrt(d2) / maxd) * 0.26 * env * aw;
             ctx.strokeStyle = 'rgba(' + net.col + ',' + al + ')';
             ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(mem[b * 2], mem[b * 2 + 1]); ctx.stroke();
           }
         }
       }
       // light up the nodes while the net holds
-      ctx.fillStyle = 'rgba(' + net.col + ',' + (0.5 * env * aw).toFixed(3) + ')';
-      for (let a = 0; a < mcnt; a++) ctx.fillRect(mem[a * 2] - dpr, mem[a * 2 + 1] - dpr, 2 * dpr, 2 * dpr);
+      ctx.fillStyle = 'rgba(' + net.col + ',' + (0.72 * env * aw).toFixed(3) + ')';
+      for (let a = 0; a < mcnt; a++) ctx.fillRect(mem[a * 2] - 1.2 * dpr, mem[a * 2 + 1] - 1.2 * dpr, 2.4 * dpr, 2.4 * dpr);
     }
 
     // glitch glyph layer
